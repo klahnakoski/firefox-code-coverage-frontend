@@ -50,17 +50,13 @@ export default class App extends Component {
           )}
         />
         <Route
-          path="/changeset/:id"
-          render={({ match }) => (
+          path="/diff"
+          render={({location}) => (
             <DiffViewerContainer
-              changeset={match.params.id}
               repoName={repoName}
+              location={location}
             />
           )}
-        />
-        <Route
-          path="/diff"
-          component={DiffViewerContainer}
         />
       </div>
     );

@@ -15,7 +15,7 @@ const ChangesetInfo = ({ changeset, push }) => {
         {author.substring(0, 22)}</td>
       <td className="changeset-node-id">
         {(linkify) ?
-          <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
+          <Link to={`/diff?changeset=${node}`}>{node.substring(0, 12)}</Link>
           : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
