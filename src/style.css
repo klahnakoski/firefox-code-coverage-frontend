@@ -65,7 +65,99 @@ td.new_line_number, td.old_line_number {
 .error_message {
 	color:#ff0000
 }
+
 /* Changesets */
 .hidden_changeset {
 	display: none
+}
+
+
+
+
+/* Styling for file view. TODO merge with app. */
+table.file_viewer {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+tr.file_line {
+	height: 18px;
+	border-bottom: 2px solid transparent;
+}
+
+tr.file_line:hover {
+	background-color: LightGrey;
+	/*border-bottom: 2px solid LightGrey;*/
+}
+
+tr.selected {
+	border-bottom: 2px solid Grey;
+}
+
+tr.hit {
+	background-color: #dfd;
+}
+
+tr.miss {
+	background-color: #ffe5e5;
+}
+
+td.file_line_number, td.file_line_tests {
+	width: 40px;
+	border-right:1px solid #eaeaea;
+	color: Grey;
+	/*padding: 1px;*/
+}
+
+td.file_line_text {
+	padding-left: 5px;
+}
+
+span.tests {
+	background: #21ba45;
+  border-radius: 10px;
+  color: #ffffff;
+	display: inline-block;
+  text-align: center;
+	font-size: 0.9em;
+	padding: 2px;
+	margin-left: 5px;
+	min-width: 12px;
+}
+
+/* file view right-siderbar */
+.tests_viewer {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 240px;
+	border-left: 2px solid #A0A0A0;
+	padding-left: 20px;
+}
+
+div.coverage_meta {
+	height: 3.8em;
+}
+
+div.coverage_meta_totals {
+	border: 1px solid #d4d4d5;
+	border-radius: 0.20rem;
+	padding-top: 1.0em;
+	padding-right: 0.3em;
+	padding-bottom: 1.0em;
+	padding-left: 0.3em;
+	float: right;
+}
+
+span.percentage_covered {
+	border-radius: 0.25rem;
+	color: rgb(255, 255, 255);
+	font-size: 1em;
+	padding-top: 0.6em;
+	padding-right: 0.8em;
+	padding-bottom: 0.6em;
+	padding-left: 0.8em;
+	margin: 0.05em;
+	background-color: #f071b0;
 }
