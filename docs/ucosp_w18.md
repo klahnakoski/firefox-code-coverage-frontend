@@ -6,7 +6,7 @@ Firefox is a huge project, consisting of around 20K source files and 3M lines of
 
 ## Goals
 
-Mozilla has two long term goals for CodeCoverage which could use some help:
+Mozilla has two long term goals for CodeCoverage which could use some help from UCOSP:
 
 ### Is new source code covered by existing tests?
 
