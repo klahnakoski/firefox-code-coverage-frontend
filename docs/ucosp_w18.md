@@ -6,7 +6,7 @@ Firefox is a huge project, consisting of around 20K source files and 3M lines of
 
 ## Goals
 
-Mozilla has two long term goals for CodeCoverage which could use some help from UCOSP:
+Mozilla has two long term goals for CodeCoverage.
 
 ### Is new source code covered by existing tests?
 
@@ -29,8 +29,8 @@ For any file, for any revision, show what tests cover that file.
 *Coverage is not collected at a per-test level yet, but we hope to have some initial data after January*
 
 
-## Technology
+## Deliverable
 
-Students will have a chance to work with HTML, JSX, React and Javascript
+UCOSP students will make enhancements to the UI, as listed by the GitHub Issues. This will allow the student to acquire working experience in HTML, JSX, React and Javascript.
 
 
