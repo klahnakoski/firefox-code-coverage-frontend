@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
 import * as Log from '../utils/log';
-// import * as Log from '../utils/log';
-import { recursiveExtend } from '../utils/map';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
@@ -191,6 +189,33 @@ export default class FileViewerContainer extends Component {
       );
     };
 
+    /* This component contains metadata of the file */
+    const FileViewerMeta = ({self}) => {
+      console.log("run render");
+      return (
+        <div className="file-meta-viewer">
+          <div className="file-meta-center">
+            <div className="file-meta-title">File Coverage</div>
+            <CoveragePercentageViewer
+              coverage={self.state.coverage}
+            />
+            <FileViewerStatus ref={
+              c => {
+                console.log("assign:" +c);
+                if (c) self.status = c
+              }
+            }/>
+          </div>
+          {self.status.app && <span className="error_message">{self.status.app}</span>}
+
+          <div className="file-summary">
+            <div className="file-path">{self.path}</div>
+          </div>
+          <div className="file-meta-revision">revision number: {self.revision}</div>
+        </div>
+      );
+    };
+
     return (
       <div>
         <div className="file-view">
@@ -206,30 +231,11 @@ export default class FileViewerContainer extends Component {
   }
 }
 
-/* This component contains metadata of the file */
-const FileViewerMeta = ({self}) => (
-  <div className="file-meta-viewer">
-    <div className="file-meta-center">
-      <div className="file-meta-title">File Coverage</div>
-      <CoveragePercentageViewer
-        coverage={self.state.coverage}
-      />
-      <FileViewerStatus ref={
-        c => {
-          self.status = c
-        }
-      }/>
-    </div>
-    {self.status.app && <span className="error_message">{self.status.app}</span>}
-
-    <div className="file-summary"><div className="file-path">{self.path}</div></div>
-    <div className="file-meta-revision">revision number: {self.revision}</div>
-  </div>
-);
 
 
 class FileViewerStatus extends Component {
   constructor(props) {
+    console.log("make fileviewer status");
     super(props);
     this.state = {};
   }
