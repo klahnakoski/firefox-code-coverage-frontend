@@ -19,7 +19,7 @@ export default class FileViewerContainer extends Component {
     super(props);
 
     /* app status */
-    this.status = new FileViewerStatus();
+    this.status = {}; //placeholder until something real exists
 
     this.state = {
       /* app data */
@@ -99,7 +99,7 @@ export default class FileViewerContainer extends Component {
       });
     } catch (error) {
       console.error(error);
-      this.setState({
+      this.status.setState({
         app: 'We did not manage to fetch test coverage from ActiveData',
         fetch_coverage: false
       });
@@ -145,7 +145,7 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
-    const { status, parsedFile, coverage, selectedLine } = this.state;
+    const { parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
@@ -153,7 +153,7 @@ export default class FileViewerContainer extends Component {
           <FileViewerMeta
             revision={this.revision}
             path={this.path}
-            status={this.status}
+            self={this}
             coverage={coverage}
           />
           <FileViewer
@@ -224,7 +224,7 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, status, coverage }) => {
+const FileViewerMeta = ({ revision, path, self, coverage }) => {
   return (
     <div className="file-meta-viewer">
       <div className="file-meta-center">
@@ -232,9 +232,11 @@ const FileViewerMeta = ({ revision, path, status, coverage }) => {
         <CoveragePercentageViewer
           coverage={coverage}
         />
-        <status/>
+        <FileViewerStatus ref={
+          c => { self.status = c }
+        } />
       </div>
-      {status.app && <span className="error_message">{status.app}</span>}
+      {self.status.app && <span className="error_message">{self.status.app}</span>}
 
       <div className="file-summary"><div className="file-path">{path}</div></div>
       <div className="file-meta-revision">revision number: {revision}</div>
