@@ -33,7 +33,7 @@ export default class FileViewerContainer extends Component {
       },
       selectedLine: undefined,
     };
-    this.setSelectedLine = this.setSelectedLine.bind(this);
+
     /* get revision and path parameters from URL */
     const parsedQuery = queryString.parse(props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
@@ -52,10 +52,6 @@ export default class FileViewerContainer extends Component {
   async componentDidMount() {
     /* Get source code and coverage in parallel  */
     await Promise.all([this.getSourceCode(), this.getCoverage()]);
-  }
-
-  setSelectedLine(selectedLineNumber) {
-    this.setState({ selectedLine: selectedLineNumber });
   }
 
   /* Get source code from hg */
@@ -145,19 +141,18 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
+    const self = this;
+    const {coverage} = self.state;
+
     /* This component renders each line of the file with its line number */
-    const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
+    const FileViewer = () => (
       <table className="file-view-table">
         <tbody>
           {
-            parsedFile.map((line, lineNumber) => (
+            self.state.parsedFile.map((line, lineNumber) => (
               <Line
-                key={lineNumber}
                 lineNumber={lineNumber + 1}
                 lineText={line}
-                coverage={coverage}
-                selectedLine={selectedLine}
-                onLineClick={onLineClick}
               />
             ))
           }
@@ -165,12 +160,12 @@ export default class FileViewerContainer extends Component {
       </table>
     );
 
-    const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
+    const Line = ({ lineNumber, lineText}) => {
       const handleOnClick = () => {
-        onLineClick(lineNumber);
+        self.setState({selectedLine: lineNumber});
       };
 
-      const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
+      const lineClass = (lineNumber === self.state.selectedLine) ? 'selected' : 'unselected';
 
       // default line color
       let nTests;
@@ -196,30 +191,15 @@ export default class FileViewerContainer extends Component {
       );
     };
 
-
-
-
-    const { parsedFile, coverage, selectedLine } = this.state;
-
     return (
       <div>
         <div className="file-view">
-          <FileViewerMeta
-            revision={this.revision}
-            path={this.path}
-            self={this}
-            coverage={coverage}
-          />
-          <FileViewer
-            parsedFile={parsedFile}
-            coverage={coverage}
-            selectedLine={selectedLine}
-            onLineClick={this.setSelectedLine}
-          />
+          <FileViewerMeta self={this}/>
+          <FileViewer/>
         </div>
         <TestsSideViewer
           coverage={coverage}
-          lineNumber={selectedLine}
+          lineNumber={self.state.selectedLine}
         />
       </div>
     );
@@ -227,25 +207,26 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, self, coverage }) => {
-  return (
-    <div className="file-meta-viewer">
-      <div className="file-meta-center">
-        <div className="file-meta-title">File Coverage</div>
-        <CoveragePercentageViewer
-          coverage={coverage}
-        />
-        <FileViewerStatus ref={
-          c => { self.status = c }
-        } />
-      </div>
-      {self.status.app && <span className="error_message">{self.status.app}</span>}
-
-      <div className="file-summary"><div className="file-path">{path}</div></div>
-      <div className="file-meta-revision">revision number: {revision}</div>
+const FileViewerMeta = ({self}) => (
+  <div className="file-meta-viewer">
+    <div className="file-meta-center">
+      <div className="file-meta-title">File Coverage</div>
+      <CoveragePercentageViewer
+        coverage={self.state.coverage}
+      />
+      <FileViewerStatus ref={
+        c => {
+          self.status = c
+        }
+      }/>
     </div>
-  );
-};
+    {self.status.app && <span className="error_message">{self.status.app}</span>}
+
+    <div className="file-summary"><div className="file-path">{self.path}</div></div>
+    <div className="file-meta-revision">revision number: {self.revision}</div>
+  </div>
+);
+
 
 class FileViewerStatus extends Component {
   constructor(props) {
