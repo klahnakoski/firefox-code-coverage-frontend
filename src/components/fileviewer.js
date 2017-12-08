@@ -145,6 +145,60 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
+    /* This component renders each line of the file with its line number */
+    const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
+      <table className="file-view-table">
+        <tbody>
+          {
+            parsedFile.map((line, lineNumber) => (
+              <Line
+                key={lineNumber}
+                lineNumber={lineNumber + 1}
+                lineText={line}
+                coverage={coverage}
+                selectedLine={selectedLine}
+                onLineClick={onLineClick}
+              />
+            ))
+          }
+        </tbody>
+      </table>
+    );
+
+    const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
+      const handleOnClick = () => {
+        onLineClick(lineNumber);
+      };
+
+      const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
+
+      // default line color
+      let nTests;
+      let color = '#ffffff';
+      // hit line
+      if (coverage.coveredLines.find(element => element === lineNumber)) {
+        nTests = coverage.testsPerHitLine[lineNumber].length;
+        color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
+      }
+      // miss line
+      else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
+        color = '#ffe5e5';
+      }
+
+      return (
+        <tr className={`file_line ${lineClass}`} onClick={handleOnClick} style={{ backgroundColor: `${color}` }}>
+          <td className="file_line_number">{lineNumber}</td>
+          <td className="file_line_tests">
+            { nTests && <span className="tests">{nTests}</span> }
+          </td>
+          <td className="file_line_text"><pre>{lineText}</pre></td>
+        </tr>
+      );
+    };
+
+
+
+
     const { parsedFile, coverage, selectedLine } = this.state;
 
     return (
@@ -171,57 +225,6 @@ export default class FileViewerContainer extends Component {
     );
   }
 }
-
-/* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
-  <table className="file-view-table">
-    <tbody>
-      {
-        parsedFile.map((line, lineNumber) => (
-          <Line
-            key={lineNumber}
-            lineNumber={lineNumber + 1}
-            lineText={line}
-            coverage={coverage}
-            selectedLine={selectedLine}
-            onLineClick={onLineClick}
-          />
-        ))
-      }
-    </tbody>
-  </table>
-);
-
-const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
-  const handleOnClick = () => {
-    onLineClick(lineNumber);
-  };
-
-  const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
-
-  // default line color
-  let nTests;
-  let color = '#ffffff';
-  // hit line
-  if (coverage.coveredLines.find(element => element === lineNumber)) {
-    nTests = coverage.testsPerHitLine[lineNumber].length;
-    color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
-  }
-  // miss line
-  else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
-    color = '#ffe5e5';
-  }
-
-  return (
-    <tr className={`file_line ${lineClass}`} onClick={handleOnClick} style={{ backgroundColor: `${color}` }}>
-      <td className="file_line_number">{lineNumber}</td>
-      <td className="file_line_tests">
-        { nTests && <span className="tests">{nTests}</span> }
-      </td>
-      <td className="file_line_text"><pre>{lineText}</pre></td>
-    </tr>
-  );
-};
 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, self, coverage }) => {
