@@ -116,10 +116,10 @@ export const CoveragePercentageViewer = ({ coverage }) => {
       <div className="coverage_percentage">
         {percentageCovered ?
           <span className="coverage_percentage" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
-            { (percentageCovered * 100).toPrecision(4) }% - { coveredLines } lines covered out of { totalLines } added
+            { (percentageCovered * 100).toPrecision(4) }% - { coveredLines } of { totalLines } covered
           </span>
           :
-          <span>No changes</span>
+          <span>please wait...</span>
         }
       </div>
     </div>
