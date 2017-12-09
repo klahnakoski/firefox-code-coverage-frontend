@@ -63,7 +63,6 @@ export default class FileViewerContainer extends Component {
         parsedFile: text.split('\n')
       });
     } catch (error) {
-      console.error(error);
       this.status.setState({
         app: 'We did not manage to fetch source file from hg.mozilla',
         fetch_source: false
@@ -92,7 +91,6 @@ export default class FileViewerContainer extends Component {
         coverage: this.parseCoverage(activeData.data)
       });
     } catch (error) {
-      console.error(error);
       this.status.setState({
         app: 'We did not manage to fetch test coverage from ActiveData',
         fetch_coverage: false
@@ -189,37 +187,12 @@ export default class FileViewerContainer extends Component {
       );
     };
 
-    /* This component contains metadata of the file */
-    const FileViewerMeta = ({self}) => {
-      console.log("run render");
-      return (
-        <div className="file-meta-viewer">
-          <div className="file-meta-center">
-            <div className="file-meta-title">File Coverage</div>
-            <CoveragePercentageViewer
-              coverage={self.state.coverage}
-            />
-            <FileViewerStatus ref={
-              c => {
-                console.log("assign:" +c);
-                if (c) self.status = c
-              }
-            }/>
-          </div>
-          {self.status.app && <span className="error_message">{self.status.app}</span>}
-
-          <div className="file-summary">
-            <div className="file-path">{self.path}</div>
-          </div>
-          <div className="file-meta-revision">revision number: {self.revision}</div>
-        </div>
-      );
-    };
-
     return (
       <div>
         <div className="file-view">
-          <FileViewerMeta self={this}/>
+          <FileViewerMeta parent={this} ref={c => {
+            self.status = c
+          }}/>
           <FileViewer/>
         </div>
         <TestsSideViewer
@@ -232,11 +205,11 @@ export default class FileViewerContainer extends Component {
 }
 
 
-
-class FileViewerStatus extends Component {
+/* This component contains metadata of the file */
+class FileViewerMeta extends Component {
   constructor(props) {
-    console.log("make fileviewer status");
     super(props);
+    this.parent = props.parent;
     this.state = {};
   }
 
@@ -255,13 +228,31 @@ class FileViewerStatus extends Component {
     };
 
     return (
-      <div className="file-meta-status">
-        <ul className="file-meta-ul">
-          {showStatus('Source code', this.state.fetch_source)}
-          {showStatus('Coverage', this.state.fetch_coverage)}
-        </ul>
+      <div className="file-meta-viewer">
+        <div className="file-meta-center">
+          <div className="file-meta-title">File Coverage</div>
+          <CoveragePercentageViewer
+            coverage={this.parent.state.coverage}
+          />
+          <div className="file-meta-status">
+            <ul className="file-meta-ul">
+              {showStatus('Source code', this.state.fetch_source)}
+              {showStatus('Coverage', this.state.fetch_coverage)}
+            </ul>
+          </div>
+
+
+        </div>
+        {this.state.app && <span className="error_message">{this.state.app}</span>}
+
+        <div className="file-summary">
+          <div className="file-path">{this.parent.path}</div>
+        </div>
+        <div className="file-meta-revision">revision number: {this.parent.revision}</div>
       </div>
     );
+
   }
+
 }
 
